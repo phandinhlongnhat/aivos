@@ -1,0 +1,253 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using UnityEngine;
+
+public class HandController : MonoBehaviour
+{
+    private HandGesture currentGesture = HandGesture.None;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Khởi tạo kết nối TCP
+        StartListening();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Cập nhật trạng thái bàn tay tùy thuộc vào giá trị nhãn
+        if (currentGesture == HandGesture.Picking)
+        {
+            HandlePickingGesture();
+        }
+        else if (currentGesture == HandGesture.Dropping)
+        {
+            HandleDroppingGesture();
+        }
+    }
+
+    void HandlePickingGesture()
+    {
+        // Lấy góc quay của bàn tay
+        Quaternion handRotation = transform.rotation;
+
+        // Cập nhật vị trí của từng đối tượng được cầm
+        for (int i = 0; i < heldObjects.Count; i++)
+        {
+            Vector3 newPosition = transform.position + handRotation * (adhesionStrengthPicking * offsets[i]);
+            heldObjects[i].position = newPosition;
+        }
+    }
+
+    void HandleDroppingGesture()
+    {
+        // Lấy góc quay của bàn tay
+        Quaternion handRotation = transform.rotation;
+
+        // Cập nhật vị trí của từng đối tượng được cầm
+        for (int i = 0; i < heldObjects.Count; i++)
+        {
+            Vector3 newPosition = transform.position + handRotation * (adhesionStrengthDropping * offsets[i]);
+            heldObjects[i].position = newPosition;
+        }
+
+        // Giải phóng đối tượng khi chuyển sang hand gesture Dropping
+        ReleaseObjects();
+    }
+
+    // Khởi tạo kết nối TCP và lắng nghe dữ liệu từ Python
+    void StartListening()
+    {
+        TcpListener server = null;
+        try
+        {
+            // Set the TcpListener on port 13000.
+            Int32 port = 13000;
+            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+
+            // TcpListener server = new TcpListener(port);
+            server = new TcpListener(localAddr, port);
+
+            // Start listening for client requests.
+            server.Start();
+
+            // Buffer for reading data
+            Byte[] bytes = new Byte[256];
+            String data = null;
+
+            // Enter the listening loop.
+            while (true)
+            {
+                Debug.Log("Waiting for a connection... ");
+
+                // Perform a blocking call to accept requests.
+                // You could also use server.AcceptSocket() here.
+                TcpClient client = server.AcceptTcpClient();
+                Debug.Log("Connected!");
+
+                data = null;
+
+                // Get a stream object for reading and writing
+                NetworkStream stream = client.GetStream();
+
+                int i;
+
+                // Loop to receive all the data sent by the client.
+                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                {
+                    // Translate data bytes to a ASCII string.
+                    data = Encoding.ASCII.GetString(bytes, 0, i);
+                    Debug.Log("Received: " + data);
+
+                    // Update the hand gesture based on the received data
+                    if (data == "Picking")
+                    {
+                        currentGesture = HandGesture.Picking;
+                    }
+                    else if (data == "Dropping")
+                    {
+                        currentGesture = HandGesture.Dropping;
+                    }
+                    else
+                    {
+                        currentGesture = HandGesture.None;
+                    }
+                }
+
+                // Shutdown and end connection
+                client.Close();
+            }
+        }
+        catch (SocketException e)
+        {
+            Debug.Log("SocketException: " + e);
+        }
+        finally
+        {
+            // Stop listening for new clients.
+            server.Stop();
+        }
+    }
+}
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using UnityEngine;
+
+public class HandController : MonoBehaviour
+{
+    private HandGesture currentGesture = HandGesture.None;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Khởi tạo kết nối TCP
+        StartListening();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Cập nhật trạng thái bàn tay tùy thuộc vào giá trị nhãn
+        if (currentGesture == HandGesture.Picking)
+        {
+            HandlePickingGesture();
+        }
+        else if (currentGesture == HandGesture.Dropping)
+        {
+            HandleDroppingGesture();
+        }
+    }
+
+    void HandlePickingGesture()
+    {
+        // Xử lý khi đang trong trạng thái Picking
+        // ...
+    }
+
+    void HandleDroppingGesture()
+    {
+        // Xử lý khi đang trong trạng thái Dropping
+        // ...
+    }
+
+    // Khởi tạo kết nối TCP và lắng nghe dữ liệu từ Python
+    void StartListening()
+    {
+        TcpListener server = null;
+        try
+        {
+            // Set the TcpListener on port 13000.
+            Int32 port = 13000;
+            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+
+            // TcpListener server = new TcpListener(port);
+            server = new TcpListener(localAddr, port);
+
+            // Start listening for client requests.
+            server.Start();
+
+            // Buffer for reading data
+            Byte[] bytes = new Byte[256];
+            String data = null;
+
+            // Enter the listening loop.
+            while (true)
+            {
+                Debug.Log("Waiting for a connection... ");
+
+                // Perform a blocking call to accept requests.
+                // You could also use server.AcceptSocket() here.
+                TcpClient client = server.AcceptTcpClient();
+                Debug.Log("Connected!");
+
+                data = null;
+
+                // Get a stream object for reading and writing
+                NetworkStream stream = client.GetStream();
+
+                int i;
+
+                // Loop to receive all the data sent by the client.
+                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                {
+                    // Translate data bytes to a ASCII string.
+                    data = Encoding.ASCII.GetString(bytes, 0, i);
+                    Debug.Log("Received: " + data);
+
+                    // Update the hand gesture based on the received data
+                    if (data == "Picking")
+                    {
+                        currentGesture = HandGesture.Picking;
+                    }
+                    else if (data == "Dropping")
+                    {
+                        currentGesture = HandGesture.Dropping;
+                    }
+                    else
+                    {
+                        currentGesture = HandGesture.None;
+                    }
+                }
+
+                // Shutdown and end connection
+                client.Close();
+            }
+        }
+        catch (SocketException e)
+        {
+            Debug.Log("SocketException: " + e);
+        }
+        finally
+        {
+            // Stop listening for new clients.
+            server.Stop();
+        }
+    }
+}
