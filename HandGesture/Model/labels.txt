@@ -1,0 +1,2 @@
+0 Picking
+1 Dropping
