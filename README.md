@@ -2,7 +2,7 @@ Hi guys, maybe this is the first time I tried really hard with this project. So,
 
 Video Result: https://youtu.be/0b3ikpokHmo
 
-This project basically can interact with the virtual object in Unity just by your hand without a controller or headset. Do you why this project was born? Actually, because I am from a really poor area in the mountainous area in central Vietnam, I love science and technology a lot but in our area can not easily learn about that, that is the reason why I want to bring XR Technology to the poor area with really low cost.
+This project basically can interact with the virtual object in Unity just by your hand without a controller or headset. Do you know why this project was born? Actually, because I am from a really poor area in the mountainous area in central Vietnam, I love science and technology a lot but in our area can not easily learn about that, that is the reason why I want to bring XR Technology to the poor area with really low cost.
 Now, let's go:
 1. I used pycharm to code hand tracking 21-point program, this really normal because it was developed a long time ago, and right now just a story about efficiency, thanks for this video: https://www.youtube.com/watch?v=RQ-2JWzNc6k that inspired me a lot about human-computer interaction, so that was a good step for me to build this project
 You guys can use the hand tracking from this video to have a good result about 21-point hand tracking
